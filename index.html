@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -237,6 +238,8 @@
 
   .editor-section button:hover { background: rgba(55,138,221,0.3); }
 
+  #pdf-btn:hover { background: rgba(76,175,80,0.3); }
+
   .hint {
     font-size: 11px;
     color: rgba(255,255,255,0.25);
@@ -301,6 +304,7 @@
   <div class="editor-section">
     <input type="text" id="name-input" placeholder="Escreve o nome do convidado..." />
     <button onclick="applyName()">Aplicar Nome</button>
+    <button onclick="downloadPDF()" id="pdf-btn" style="background: rgba(76,175,80,0.2); border-color: rgba(76,175,80,0.4);">Salvar como PDF</button>
     <p class="hint">Escreve o nome e faz captura de ecrã para partilhar.</p>
   </div>
 </div>
@@ -321,6 +325,25 @@
   document.getElementById('name-input').addEventListener('keydown', function(e){
     if (e.key === 'Enter') applyName();
   });
+
+  function downloadPDF() {
+    const name = document.getElementById('name-input').value.trim();
+    if (!name) {
+      alert('Por favor, coloque o nome do convidado primeiro!');
+      return;
+    }
+
+    const element = document.querySelector('.invite-card');
+    const opt = {
+      margin: 10,
+      filename: `convite_${name}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  }
 </script>
 
 </body>
