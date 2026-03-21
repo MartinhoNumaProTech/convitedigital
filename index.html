@@ -15,7 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -340,22 +341,16 @@
     }
 
     const element = document.querySelector('.invite-card');
-    const clonedElement = element.cloneNode(true);
     
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-10000px';
-    tempDiv.style.width = '420px';
-    tempDiv.appendChild(clonedElement);
-    document.body.appendChild(tempDiv);
-
-    setTimeout(() => {
-      html2canvas(clonedElement, {
-        scale: 3,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#0a1628'
-      }).then(canvas => {
+    html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#0a1628',
+      allowTaint: true
+    }).then(canvas => {
+      try {
+        const { jsPDF } = window.jspdf;
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
           orientation: 'portrait',
@@ -367,13 +362,14 @@
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         pdf.addImage(imgData, 'PNG', 2.5, 2.5, imgWidth, imgHeight);
         pdf.save(`convite_${name}.pdf`);
-        document.body.removeChild(tempDiv);
-      }).catch(err => {
+      } catch (err) {
         console.error('Erro ao gerar PDF:', err);
         alert('Erro ao salvar o PDF. Tente novamente!');
-        document.body.removeChild(tempDiv);
-      });
-    }, 100);
+      }
+    }).catch(err => {
+      console.error('Erro ao capturar canvas:', err);
+      alert('Erro ao salvar o PDF. Tente novamente!');
+    });
   }
 </script>
 
