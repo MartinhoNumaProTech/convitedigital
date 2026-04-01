@@ -1,5 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convite Exclusivo - Broders Company Gala Edition">
+  <meta name="theme-color" content="#0a1628">
+  <title>Convite Exclusivo - Broders Company</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
 <style>
-    body {
-        font-family: 'Roboto', sans-serif;
-    }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1.5rem 1rem;
+    background: #111;
+    font-family: 'roboto', sans-serif;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: #0a0a0a;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 0.5px solid rgba(212,175,55,0.3);
+    position: relative;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+    padding: 2.2rem 1.8rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .invite-tag {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(212,175,55,0.75);
+    margin-bottom: 0.6rem;
+  }
+
+  .guest {
+    font-family: 'roboto', sans-serif;
+    font-size: 38px;
+    color: #D4AF37;
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0 14px rgba(212,175,55,0.3);
+  }
+
+  .divider-gold {
+    width: 60%;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, rgba(212,175,55,0.6), transparent);
+    margin: 0.8rem auto 1.4rem;
+  }
+
+  .details-row {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 1.2rem;
+  }
+
+  .det-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.3rem;
+  }
+
+  .det-sep {
+    width: 0.5px;
+    background: rgba(212,175,55,0.35);
+    margin: 4px 0;
+  }
+
+  .det-main {
+    font-family: 'roboto', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #D4AF37;
+    line-height: 1;
+  }
+
+  .det-sub {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(212,175,55,0.6);
+    margin-top: 3px;
+  }
+
+  .det-center {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    text-align: left;
+  }
+
+  .place-name {
+    font-family: 'roboto', serif;
+    font-size: 14px;
+    color: #D4AF37;
+    line-height: 1.2;
+  }
+
+  .place-addr {
+    font-size: 10px;
+    color: rgba(212,175,55,0.55);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .dress-line {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(212,175,55,0.6);
+    margin-bottom: 1rem;
+  }
+
+  .prov-block {
+    width: 100%;
+    border-top: 0.5px solid rgba(212,175,55,0.2);
+    border-bottom: 0.5px solid rgba(212,175,55,0.2);
+    padding: 0.9rem 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prov-txt {
+    font-family: 'roboto', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(212,175,55,0.7);
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  .prov-ref {
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(212,175,55,0.4);
+  }
+
+  .footer-tag {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(212,175,55,0.35);
+    padding-top: 0.5rem;
+  }
+
+  .editor {
+    width: 100%;
+    max-width: 380px;
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .editor input {
+    width: 100%;
+    font-family: 'roboto', sans-serif;
+    font-size: 20px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(212,175,55,0.35);
+    background: rgba(212,175,55,0.05);
+    color: #D4AF37;
+    text-align: center;
+    outline: none;
+  }
+
+  .editor input::placeholder {
+    font-family: 'roboto', sans-serif;
+    font-size: 12px;
+    color: rgba(212,175,55,0.3);
+  }
+
+  .editor input:focus { border-color: rgba(212,175,55,0.6); }
+
+  .editor button {
+    width: 100%;
+    font-family: 'roboto', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 11px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 0.5px solid rgba(212,175,55,0.3);
+    background: rgba(212,175,55,0.1);
+    color: #D4AF37;
+  }
+
+  .editor button:hover { background: rgba(212,175,55,0.2); }
+
+  .hint {
+    font-size: 10px;
+    color: rgba(212,175,55,0.3);
+    text-align: center;
+  }
 </style>
+
+<div class="page">
+  <div class="card" id="card">
+    <canvas id="glitter"></canvas>
+    <div class="inner">
+      <div class="invite-tag">Você está convidado</div>
+      <div class="guest" id="name-out">Convidado</div>
+      <div class="divider-gold"></div>
+
+      <div class="details-row">
+        <div class="det-col">
+          <span class="det-main">12</span>
+          <span class="det-sub">Abril</span>
+        </div>
+        <div class="det-sep"></div>
+        <div class="det-center">
+          <span class="place-name">Salão do Mucososo</span>
+          <span class="place-addr">Rua do Mucoso</span>
+        </div>
+        <div class="det-sep"></div>
+        <div class="det-col">
+          <span class="det-main">16</span>
+          <span class="det-sub">Horas</span>
+        </div>
+      </div>
+
+      <div class="dress-line">Traje Elegante</div>
+
+      <div class="prov-block">
+        <div class="prov-txt">"Melhor é um vizinho perto do que um irmão longe."</div>
+        <div class="prov-ref">Provérbios 27:10</div>
+      </div>
+
+      <div class="footer-tag">broders-company &nbsp;·&nbsp; 2026</div>
+    </div>
+  </div>
+
+  <div class="editor">
+    <input type="text" id="name-input" placeholder="Escreve o nome do convidado..." />
+    <button onclick="applyName()">Aplicar Nome</button>
+    <p class="hint">Escreve o nome e faz captura de ecrã para partilhar.</p>
+  </div>
+</div>
+
+<script>
+  function initGlitter() {
+    var card = document.getElementById('card');
+    var canvas = document.getElementById('glitter');
+    var W = card.offsetWidth, H = card.offsetHeight;
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    var dots = [];
+    for (var i = 0; i < 120; i++) {
+      dots.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*2+0.5, a: Math.random(), speed: Math.random()*0.01+0.003 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      dots.forEach(function(d) {
+        d.a += d.speed;
+        if (d.a > 1) { d.a = 0; d.x = Math.random()*W; d.y = Math.random()*H; }
+        var alpha = Math.sin(d.a * Math.PI);
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(212,175,55,'+( alpha*0.85)+')';
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+  window.addEventListener('load', function() { setTimeout(initGlitter, 200); });
+
+  function setFont() {
+    document.getElementById('name-out').style.setProperty('font-family', "'Puppies Play', cursive", 'important');
+  }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setFont); } else { setTimeout(setFont, 800); }
+
+  function applyName() {
+    var val = document.getElementById('name-input').value.trim();
+    var el = document.getElementById('name-out');
+    el.textContent = val || 'Convidado';
+    el.style.setProperty('font-family', "'Puppies Play', cursive", 'important');
+  }
+  document.getElementById('name-input').addEventListener('keydown', function(e) { if (e.key==='Enter') applyName(); });
+</script>
+
+</body>
+</html>
